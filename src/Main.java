@@ -3,5 +3,4 @@ public class Main {
         System.out.println("Hello world!");
     }
     int i;
-    public int anInt;
 }
