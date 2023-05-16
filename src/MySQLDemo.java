@@ -24,7 +24,6 @@ public class MySQLDemo {
             // 执行查询
             System.out.println(" 实例化Statement对象...");
             stmt = conn.createStatement();
-            String sql;
             //stmt.executeUpdate("INSERT into websites values (9,'', 'www.lpl.com',778,'cs')");   //增加行
             //stmt.executeUpdate("UPDATE websites SET name = 'uun' WHERE id = 8");                //修改
             //stmt.executeUpdate("DELETE FROM websites WHERE id = 9");                            //删除
