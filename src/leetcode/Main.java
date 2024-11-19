@@ -1,32 +1,114 @@
 package leetcode;
 
 import java.util.*;
+import java.util.stream.IntStream;
 
 /**
  *  mark标记  star重点  done完成
  */
 public class Main {
     public static void main(String[] args) {
-//        Scanner in = new Scanner(System.in);
-/*        int[][] nums = {{0,1},{0,2},{1,3},{1,4},{2,5},{5,6},{5,7}};
-        int[] coins = {0,0,0,1,1,0,0,1};
-        System.out.println(collectTheCoins(coins,nums));*/
+//
+//        char[][] array = {
+//                {'1','0','1','1','1'},
+//                {'1','0','1','0','1'},
+//                {'1','1','1','0','1'}
+//        };
+//        System.out.println(numIslands(array));
+    }
 
-//        LinkedHashMap s = new LinkedHashMap<>();
-//        int[][] nums = {{5,2},{5,2},{5,2},{5,2},{5,2},{5,2}};
-//        System.out.println(minEdgeReversals(5,nums));
-        long t = System.nanoTime();
-        long t1 = t;
-        for (int i = 0; i < 100000; i++) {
-            for (int j = 0; j < 1000; j++) {
-
-            }
-            long t2 = System.nanoTime();
-            System.out.println(t2 - t1);
-            t1 = t2;
+    /**
+     * leetcode 42. 接雨水 done
+     * @param height
+     * @return
+     */
+    public static int trap(int[] height) {
+        int res = 0;
+        int maxIndex = IntStream.range(0,height.length)
+                .reduce((i,j) -> height[i] > height[j] ? i : j)
+                .orElse(-1);
+        int[] leftArray = Arrays.copyOfRange(height, 0, maxIndex + 1); // 左侧部分（不含最大值）
+        int[] rightArray = Arrays.copyOfRange(height, maxIndex, height.length); // 包含最大值的右侧部分
+        for (int i = 0; i < rightArray.length / 2; i++) {
+            int temp = rightArray[i];
+            rightArray[i] = rightArray[rightArray.length - 1 - i];
+            rightArray[rightArray.length - 1 - i] = temp;
         }
-        t1 = System.nanoTime();
-        System.out.println(t1 - t);
+        res = getRes(leftArray, res);
+        res = getRes(rightArray, res);
+
+        return res;
+    }
+
+    private static int getRes(int[] height, int res) {
+        for (int i = 0; i < height.length-1; i++) {
+            int tmp = 0;
+            for (int j = i+1; j < height.length ; j++) {
+                if (height[j] < height[i]) {
+                    tmp += height[i] - height[j];
+                }
+                if (height[j] >= height[i]) {
+                    i = j-1;
+                    res += tmp;
+                    break;
+                }
+            }
+        }
+        return res;
+    }
+
+    /**
+     * leetcode 661. 图片平滑器 done
+     * @param img
+     * int[][] img = {{100,200,100},{200,50,200},{100,200,100}};
+     * @return
+     */
+    public static int[][] imageSmoother(int[][] img) {
+        int[][] res = new int[img.length][img[0].length];
+        for (int i = 0; i < img.length; i++) {
+            for (int j = 0; j < img[i].length; j++) {
+                boolean up = i == 0;
+                boolean down = i == img.length - 1;
+                boolean left = j == 0;
+                boolean right = j == img[0].length - 1;
+                res[i][j] += img[i][j];
+                int count = 1;
+                if (!up) {
+                    res[i][j] += img[i-1][j];
+                    count++;
+                }
+                if (!down) {
+                    res[i][j] += img[i+1][j];
+                    count++;
+                }
+                if (!left) {
+                    res[i][j] += img[i][j-1];
+                    count++;
+                }
+                if (!right) {
+                    res[i][j] += img[i][j+1];
+                    count++;
+                }
+                if (!up && !left) {
+                    res[i][j] += img[i-1][j-1];
+                    count++;
+                }
+                if (!up && !right) {
+                    res[i][j] += img[i-1][j+1];
+                    count++;
+                }
+                if (!down && !left) {
+                    res[i][j] += img[i+1][j-1];
+                    count++;
+                }
+                if (!down && !right) {
+                    res[i][j] += img[i+1][j+1];
+                    count++;
+                }
+                res[i][j] = res[i][j] / count;
+            }
+        }
+        return res;
     }
 
     /**
