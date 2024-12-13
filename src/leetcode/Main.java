@@ -1,6 +1,7 @@
 package leetcode;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
@@ -8,13 +9,142 @@ import java.util.stream.IntStream;
  */
 public class Main {
     public static void main(String[] args) {
-//
+        int[] nums = {1,5,3,2,5,6,7};
 //        char[][] array = {
 //                {'1','0','1','1','1'},
 //                {'1','0','1','0','1'},
 //                {'1','1','1','0','1'}
 //        };
-//        System.out.println(numIslands(array));
+//        firstMissingPositive(nums);
+        System.out.println(firstMissingPositive(nums));
+    }
+
+    /**
+     * leetcode 41. 缺失的第一个正数 done
+     * @param nums
+     * @return
+     */
+    public static int firstMissingPositive(int[] nums) {
+        int n = nums.length;
+        for (int i = 0; i < n; i++) {
+            while (nums[i] >= 1 && nums[i] <= n && nums[nums[i]-1] != nums[i]) {
+                int tmp = nums[i];
+                nums[i] = nums[nums[i]-1];
+                nums[tmp-1] = tmp;
+            }
+        }
+        for (int i = 0; i < n; i++) {
+            if (nums[i] != i+1) {
+                return i+1;
+            }
+        }
+        return nums.length+1;
+        // O(N log(N))
+//        Arrays.sort(nums);
+//        int res = 1;
+//        for (int i = 0; i < nums.length; i++) {
+//            if (nums[i] <= 0) continue;
+//            if (i > 0 && nums[i] == nums[i-1]) continue;
+//            if (res != nums[i]) return res;
+//            res++;
+//        }
+//        return res;
+    }
+
+    // 左右乘积列表 res[i] = L[i] * R[i]
+    /**
+     * leetcode 238. 除自身以外数组的乘积 done
+     * @param nums
+     * @return
+     */
+    public static int[] productExceptSelf(int[] nums) {
+        int n = nums.length;
+        int[] res = new int[n];
+        res[0] = 1;
+        for (int i = 1; i < n; i++) {
+            res[i] = nums[i-1] * res[i-1];
+        }
+        int R = 1;
+        for (int i = n-1; i >= 0; i--) {
+            res[i] = res[i] * R;
+            R *= nums[i];
+        }
+        return res;
+    }
+
+
+    // Arrays.copyOf 返回一个新数组的地址 System.arraycopy 直接改变数组内的值
+    /**
+     * leetcode 189. 轮转数组 done
+     * @param nums
+     * @param k
+     */
+    public static void rotate(int[] nums, int k) {
+        int n = nums.length;
+        k = k % n;
+        int[] newArr = new int[n];
+        for (int i = 0; i < n; i++) {
+            if (i < k) {
+                newArr[i] = nums[n-k+i];
+            } else {
+                newArr[i] = nums[i-k];
+            }
+        }
+//        nums = Arrays.copyOf(newArr,n);
+
+        System.arraycopy(newArr, 0, nums, 0, n);
+    }
+
+    // 双指针  排序！！！ 遍历+判断条件
+    /**
+     * leetcode 15. 三数之和 done
+     * @param nums
+     * @return
+     */
+    public static List<List<Integer>> threeSum(int[] nums) {
+        int n = nums.length;
+        Arrays.sort(nums);
+        List<List<Integer>> res = new ArrayList<>();
+//        Set<List<Integer>> res = new HashSet<>();
+//        List<Integer> list = new ArrayList<>(Arrays.stream(nums).boxed().toList());
+//        Collections.sort(list);
+
+        for (int i = 0; i < n; i++) {
+            if (i > 0 && nums[i] == nums[i-1]) {
+                continue;
+            }
+            int k = n-1;
+            for (int j = i+1; j < n; j++) {
+                if (j > i+1 && nums[j] == nums[j-1]) {
+                    continue;
+                }
+                while (k > j && nums[i] + nums[j] + nums[k] > 0) {
+                    k--;
+                }
+                if (k == j) break;
+                if (nums[i] + nums[j] + nums[k] == 0) {
+                    List<Integer> tmp = new ArrayList<>(Arrays.asList(nums[i], nums[j], nums[k]));
+                    res.add(tmp);
+                }
+            }
+        }
+        return res;
+
+//        遍历+判断条件 超时！！
+//        Set<List<Integer>> res = new HashSet<>();
+//        for (int i = 0; i < nums.length; i++) {
+//            for (int j = i+1; j < nums.length; j++) {
+//                for (int k = j+1; k < nums.length; k++) {
+//                    if (nums[i] + nums[j] + nums[k] == 0) {
+//                        List<Integer> tmp = new ArrayList<>(Arrays.asList(nums[i], nums[j], nums[k]));
+//                        Collections.sort(tmp);
+//                        res.add(tmp);
+//                    }
+//                }
+//            }
+//
+//        }
+//        return new ArrayList<>(res);
     }
 
     /**

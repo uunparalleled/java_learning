@@ -1,21 +1,113 @@
 package leetcode;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import leetcode.data.inputData;
+
+import java.util.*;
 
 public class MapMain {
 
     public static void main(String[] args) {
-        char[][] array = {
-                {'1','0','1','1','1'},
-                {'1','0','1','0','1'},
-                {'1','1','1','0','1'}
-        };
-        System.out.println(numIslands(array));
+//        char[][] array = {
+//                {'1','0','1','1','1'},
+//                {'1','0','1','0','1'},
+//                {'1','1','1','0','1'}
+//        };
+        String input = "[[0,1],[1,2],[2,0]]";
+        char[][] chars = inputData.inputArrayChar(input);
+        int[][] nums = inputData.inputArrayInt(input);
+        System.out.println(canFinish(3,nums));
     }
 
+    public static boolean canFinish(int numCourses, int[][] prerequisites) {
+        Map<Integer, Integer> courses = new HashMap<>();
+        for (int i = 0; i < prerequisites.length; i++) {
+            if (prerequisites[i][0] == prerequisites[i][1]) return false;
+            if (!courses.containsKey(prerequisites[i][0])) {
+                if (!courses.containsKey(prerequisites[i][1])) {
+                    courses.put(prerequisites[i][0],0);
+                    courses.put(prerequisites[i][1],1);
+                } else {
+                    courses.put(prerequisites[i][0],courses.get(prerequisites[i][1])-1);
+                }
+            } else if (!courses.containsKey(prerequisites[i][1])){
+                courses.put(prerequisites[i][1],courses.get(prerequisites[i][0])+1);
+            } else if (courses.get(prerequisites[i][1]) < courses.get(prerequisites[i][0])) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * leetcode 994. 腐烂的橘子 done
+     * BFS两种方式 1、四向都探索，判断不能探索的格子   2、判断四周能探索的格子去探索
+     * 记录深度： 每次循环都将 Queue完全取出
+     * 探索记录：直接使用 Queue<int[]>记录ij
+     * @param grid
+     * @return
+     */
+    public static int orangesRotting(int[][] grid) {
+        int res = 0;
+        // 腐烂的橘子
+        Queue<String> queue = new LinkedList<>();
+        List<String> goodQueue = new LinkedList<>();
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[0].length; j++) {
+                if (grid[i][j] == 2) {
+                    queue.offer(i + "&" + j);
+                }
+                if (grid[i][j] == 1) {
+                    goodQueue.add(i + "&" + j);
+                }
+            }
+        }
+        if (goodQueue.size() == 0) return 0;
+        if (queue.size() == 0 && goodQueue.size() > 0) return -1;
+        // 遍历
+        while (!queue.isEmpty()) {
+            // 所有待腐烂的橘子
+            List<String> list = new ArrayList<>();
+            while (!queue.isEmpty()) {
+                list.add(queue.poll());
+            }
+            for (String code : list) {
+                String[] ij = code.split("&");
+                int i = Integer.parseInt(ij[0]);
+                int j = Integer.parseInt(ij[1]);
+
+                // 两种方式 1、四向都探索，判断不能探索的格子   2、判断四周能探索的格子去探索
+                if (!inArea(grid,i,j)) {
+                    continue;
+                }
+                if (grid[i][j] >= 3) {
+                    continue;
+                }
+                if (grid[i][j] == 0) {
+                    continue;
+                }
+
+                grid[i][j] = res + 3;
+                goodQueue.remove(i + "&" + j);
+                // 上下左右
+                queue.offer((i-1) + "&" + (j));
+                queue.offer((i+1) + "&" + (j));
+                queue.offer((i) + "&" + (j-1));
+                queue.offer((i) + "&" + (j+1));
+            }
+            res++;
+        }
+
+        if (goodQueue.isEmpty()) {
+            return res-2;
+        }
+        return -1;
+    }
+
+    /**
+     * leetcode 200. 岛屿数量 done
+     * @param grid
+     * @return
+     */
     public static int numIslands(char[][] grid) {
         int[][] areas = new int[grid.length][grid[0].length];
         int area = 1;
@@ -91,5 +183,11 @@ public class MapMain {
     public static boolean inArea(int[][] array, int i, int j) {
         return 0 <= i && i < array.length
                 && 0 <= j && j < array[0].length;
+    }
+    public static boolean inArea(int[][] array, String i, String j) {
+        int i1 = Integer.parseInt(i);
+        int j1 = Integer.parseInt(j);
+        return 0 <= i1 && i1 < array.length
+                && 0 <= j1 && j1 < array[0].length;
     }
 }
