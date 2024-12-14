@@ -1,20 +1,180 @@
 package leetcode.array;
 
-import java.util.Arrays;
-import java.util.Comparator;
+import java.util.*;
 
 public class ArrayMain {
 
     public static void main(String[] args) {
 //        int[][] nums = {{2,3},{4,5},{6,7},{8,9},{1,10}};
-//        int[] nums = {1,3,3,5,6};
+        int[] nums = {3,3,3,1,2,1,1,2,3,3,4};
 //        int[] res = searchRange(nums,3);
 //        System.out.println(Arrays.toString(res));
 
-        System.out.println(mySqrt(2147395599));
+        System.out.println(totalFruit(nums));
     }
 
-    // 移除元素
+
+    // 长度最小的子数组     滑动窗口
+
+    /**
+     * leetcode 904. 水果成篮   Map记录水果数量   最大滑动窗口
+     */
+    public static int totalFruit(int[] fruits) {
+        int n = fruits.length;
+        Map<Integer, Integer> cnt = new HashMap<>();
+        int l = 0, r = 0, ans = 0;
+
+        // 最大滑动窗口
+        while (r < n) {
+            cnt.put(fruits[r], cnt.getOrDefault(fruits[r],0) + 1);
+            // 不满足条件
+            while (cnt.size() > 2) {
+                cnt.put(fruits[l], cnt.get(fruits[l]) - 1);
+                if (cnt.get(fruits[l]) == 0) {
+                    cnt.remove(fruits[l]);
+                }
+                // 右移左边界
+                l++;
+            }
+            // 更新结果   在循环外！！！
+            ans = Math.max(ans,r-l+1);
+            // 右移右边界
+            r++;
+        }
+        return ans;
+    }
+
+    /**
+     * leetcode 209. 长度最小的子数组   前缀和/滑动窗口  最小滑动窗口
+     */
+    public static int minSubArrayLen(int s, int[] nums) {
+        int n = nums.length;
+        if (n == 0) return 0;
+        int ans = Integer.MAX_VALUE;
+        int start = 0, end = 0;
+        int sum = 0;
+
+        // 最小滑动窗口
+        while (end < n) {
+            sum += nums[end];
+            // 满足条件
+            while (sum >= s) {
+                // 更新结果
+                ans = Math.min(ans, end - start + 1);
+                sum -= nums[start];
+                // 右移左边界，缩小窗口
+                start++;
+            }
+            // 右移右边界
+            end++;
+        }
+        return ans == Integer.MAX_VALUE ? 0 : ans;
+    }
+
+    public static int maxSubArraySum(int[] nums, int mid) {
+        int sum = 0;
+        int max = 0;
+        for (int i = 0; i < nums.length; i++) {
+            if (i < mid) {
+                sum += nums[i];
+                max = sum;
+            } else {
+                sum += nums[i] - nums[i-mid];
+                max = Math.max(sum, max);
+            }
+        }
+        return max;
+    }
+
+
+    // 移除元素         双指针
+    /**
+     * leetcode 977. 有序数组的平方
+     */
+    public static int[] sortedSquares(int[] nums) {
+        int l = 0;
+        int r = nums.length-1;
+        int[] res = new int[nums.length];
+        for (int i = nums.length-1; i >= 0; i--) {
+            if (nums[l] + nums[r] > 0) {
+                res[i] = nums[r] * nums[r];
+                r--;
+            } else {
+                res[i] = nums[l] * nums[l];
+                l++;
+            }
+        }
+        return res;
+    }
+
+    /**
+     * leetcode 844. 比较含退格的字符串
+     */
+    public static boolean backspaceCompare(String s, String t) {
+        int i = s.length()-1,j = t.length()-1;
+        int skipS = 0, skipT = 0;
+        while (i >= 0 || j >= 0) {
+            while (i >= 0) {
+                if (s.charAt(i) == '#') {
+                    skipS++;
+                    i--;
+                } else if (skipS > 0) {
+                    skipS--;
+                    i--;
+                } else break;
+            }
+            while (j >= 0) {
+                if (t.charAt(j) == '#') {
+                    skipT++;
+                    j--;
+                } else if (skipT > 0) {
+                    skipT--;
+                    j--;
+                } else break;
+            }
+            if (i < 0 && j < 0) return true;
+            if (i < 0 || j < 0) {
+                return false;
+            } else if (s.charAt(i) != t.charAt(j)){
+                return false;
+            } else {
+                i--;
+                j--;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * leetcode 283. 移动零
+     */
+    public static void moveZeroes(int[] nums) {
+        int index = 0;
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] != 0) {
+                nums[index] = nums[i];
+                index++;
+            }
+        }
+        if (index == 0) return;
+        for (int i = index; i < nums.length; i++) {
+            nums[i] = 0;
+        }
+    }
+
+    /**
+     * leetcode 26. 删除有序数组中的重复项
+     */
+    public static int removeDuplicates(int[] nums) {
+        int index = 1;
+        for (int i = 1; i < nums.length; i++) {
+            if (nums[i] != nums[i-1]) {
+                nums[index] = nums[i];
+                index++;
+            }
+        }
+        return index;
+    }
 
     /**
      * leetcode 27. 移除元素            快慢指针
