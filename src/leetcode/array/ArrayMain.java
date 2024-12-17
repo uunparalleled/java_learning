@@ -1,91 +1,258 @@
 package leetcode.array;
 
+import leetcode.data.inputData;
+
 import java.util.*;
 
 public class ArrayMain {
 
     public static void main(String[] args) {
-//        int[][] nums = {{2,3},{4,5},{6,7},{8,9},{1,10}};
-        int[] nums = {3,3,3,1,2,1,1,2,3,3,4};
-//        int[] res = searchRange(nums,3);
-//        System.out.println(Arrays.toString(res));
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        int[] nums = new int[n];
+        for (int i = 0; i < n; i++) {
+            nums[i] = sc.nextInt();
+        }
+        int a = sc.nextInt();
+        int b = sc.nextInt();
 
-        System.out.println(totalFruit(nums));
+        // 读取一个单词 例如：Hello
+        String word = sc.next();
+        // 读取整行文本
+        String line = sc.nextLine();
+        // 消耗换行符
+        sc.nextLine();
+        // 判断空白行
+        boolean isEmptyLine = !line.trim().isEmpty();
+        // 读取浮点数
+        double d = sc.nextDouble();
     }
 
+    /*public static void main(String[] args) {
+
+        int[][] nums = inputData.inputArrayInt("[1,2,3,4],[12,13,14,5],[11,16,15,6],[10,9,8,7]");
+//        int[] nums = {100000,2000};
+//        int[] nums = {4,5,6,7,0,1,2};
+//        int[] res = searchRange(nums,3);
+        String s = "AAAAAAABBCCCC";
+        String t = "AAAABB";
+//        System.out.println(Arrays.toString(res));
+
+//        int a = (int) ((10e10 + 3) / 10e9);
+//        System.out.println(10e9+7 - 1000000000);
+//        System.out.println(Arrays.toString(getFinalState(nums, 2, 1000000)));
+        System.out.println(spiralArray(nums));
+//        System.out.println(searchRotatedSortedArray(nums,0));
+    }
+*/
+
+    // 区间和
+
+
+
+    // 螺旋矩阵
+
+    /**
+     * leetcode LCR 146. 螺旋遍历二维数组       同 54题
+     */
+    public static int[] spiralArray(int[][] array) {
+        if (array.length == 0) return new int[0];
+        int a = 0, b = 0, m = array.length, n = array[0].length;
+        double angle = 0.0;
+        int[] res = new int[m*n];
+        boolean[][] flag = new boolean[m][n];
+
+        for (int i = 0; i < m * n; i++) {
+            res[i] = array[a][b];
+            flag[a][b] = true;
+            a += (int) Math.sin(angle);
+            b += (int) Math.cos(angle);
+
+            if ((a == 0 && b == n) || (a == m && b == n-1) || (a == m-1 && b == -1) || flag[a][b]) {
+                a -= (int)Math.sin(angle);
+                b -= (int)Math.cos(angle);
+                angle += Math.PI/2;
+                a += (int)Math.sin(angle);
+                b += (int)Math.cos(angle);
+            }
+        }
+        return res;
+    }
+
+    /**
+     * leetcode 54. 螺旋矩阵
+     */
+    public static List<Integer> spiralOrder(int[][] matrix) {
+        List<Integer> res = new ArrayList<>();
+        double angle = 0;
+        int a = 0, b = 0;
+        int m = matrix.length, n = matrix[0].length;
+        boolean[][] flag = new boolean[m][n];
+        for (int i = 1; i <= m*n; i++) {
+            res.add(matrix[a][b]);
+            flag[a][b] = true;
+            a += (int)Math.sin(angle);
+            b += (int)Math.cos(angle);
+
+            if ((a == 0 && b == n) || (a == m && b == n-1) || (a == m-1 && b == -1)
+                    || (flag[a][b])
+            ) {
+                a -= (int)Math.sin(angle);
+                b -= (int)Math.cos(angle);
+                angle += Math.PI/2;
+                a += (int)Math.sin(angle);
+                b += (int)Math.cos(angle);
+            }
+        }
+        return res;
+    }
+
+    /**
+     * leetcode 59. 螺旋矩阵 II
+     */
+    public static int[][] generateMatrix(int n) {
+        int[][] res = new int[n][n];
+        double angle = 0;
+        int a = 0, b = 0;
+        res[a][b] = 1;
+        for (int i = 2; i <= n*n; i++) {
+            a += (int) Math.sin(angle);
+            b += (int)Math.cos(angle);
+            res[a][b] = i;
+
+            if (a == 0 && b == n-1) angle += Math.PI / 2;
+            else if (a == n-1 && b == n-1) angle += Math.PI / 2;
+            else if (a == n-1 && b == 0) angle += Math.PI / 2;
+            else if (res[a+(int)Math.sin(angle)][b+(int)Math.cos(angle)] != 0) {
+                angle += Math.PI / 2;
+            }
+        }
+        return res;
+    }
 
     // 长度最小的子数组     滑动窗口
 
     /**
-     * leetcode 904. 水果成篮   Map记录水果数量   最大滑动窗口
+     * leetcode 438. 找到字符串中所有字母异位词
      */
-    public static int totalFruit(int[] fruits) {
-        int n = fruits.length;
-        Map<Integer, Integer> cnt = new HashMap<>();
-        int l = 0, r = 0, ans = 0;
-
-        // 最大滑动窗口
-        while (r < n) {
-            cnt.put(fruits[r], cnt.getOrDefault(fruits[r],0) + 1);
-            // 不满足条件
-            while (cnt.size() > 2) {
-                cnt.put(fruits[l], cnt.get(fruits[l]) - 1);
-                if (cnt.get(fruits[l]) == 0) {
-                    cnt.remove(fruits[l]);
-                }
-                // 右移左边界
-                l++;
+    public static List<Integer> findAnagrams(String s, String p) {
+        List<Integer> res = new ArrayList<>();
+        int left = 0, right = 0, count = 0, other = 0;
+        char[] ss = s.toCharArray();
+        char[] pp = p.toCharArray();
+        int[] hash = new int[128];
+        int[] tmp = new int[128];
+        for (char ch : pp) hash[ch]++;
+        while (right < s.length()) {
+            char in = ss[right++];
+            tmp[in]++;
+            if (tmp[in] > hash[in]) other++;
+            else count++;
+            while (other != 0) {
+                char out = ss[left++];
+                tmp[out]--;
+                if (tmp[out] >= hash[out]) other--;
+                else count--;
             }
-            // 更新结果   在循环外！！！
-            ans = Math.max(ans,r-l+1);
-            // 右移右边界
-            r++;
+
+            if (count == p.length()) res.add(left);
         }
-        return ans;
+        return res;
     }
 
     /**
-     * leetcode 209. 长度最小的子数组   前缀和/滑动窗口  最小滑动窗口
+     * leetcode 3. 无重复字符的最长子串
      */
-    public static int minSubArrayLen(int s, int[] nums) {
-        int n = nums.length;
-        if (n == 0) return 0;
-        int ans = Integer.MAX_VALUE;
-        int start = 0, end = 0;
-        int sum = 0;
+    public static int lengthOfLongestSubstring(String s) {
+        int left = 0, right = 0, n = s.length(), count = 0, l = -1, r = -1;
+        int[] tmp = new int[128];
+        char[] ss = s.toCharArray();
 
-        // 最小滑动窗口
-        while (end < n) {
-            sum += nums[end];
-            // 满足条件
-            while (sum >= s) {
-                // 更新结果
-                ans = Math.min(ans, end - start + 1);
-                sum -= nums[start];
-                // 右移左边界，缩小窗口
+        while (right < n) {
+            char in = ss[right++];
+            if (tmp[in]++ == 1) count++;
+            while (count != 0) {
+                char out = ss[left++];
+                if (--tmp[out] == 1) count--;
+            }
+            if (r - l < right - left) { r = right; l = left; }
+
+        }
+        return l == -1 ? 0 : (r-l);
+    }
+
+    /**
+     * !!! leetcode 76. 最小覆盖子串   int[128]代替 Map     count计数来判断是否符合条件
+     */
+    public static String minWindow(String s, String t) {
+        char[] ss = s.toCharArray();
+        char[] tt = t.toCharArray();
+        int[] hash = new int[128];
+        int[] tmp = new int[128];
+        int left = 0, right = 0, n1 = s.length(), n2 = t.length(), count = 0;
+        int l = -1, r = n1;
+        for (char ch : tt) hash[ch]++;
+
+        while (right < n1) {
+            char in = ss[right++];
+            tmp[in]++;
+            if (tmp[in] <= hash[in]) count++;
+            while (count == n2) {
+                // update
+                if (right-left < r-l) {
+                    r = right;
+                    l = left;
+                }
+                char out = ss[left++];
+                tmp[out]--;
+                if (tmp[out] < hash[out]) count--;
+            }
+        }
+        return l == -1 ? "" : s.substring(l,r);
+    }
+
+    /**
+     * !!! leetcode 904. 水果成篮   Map记录水果数量   最大滑动窗口
+     */
+    public static int totalFruit(int[] fruits) {
+        int start = 0, end = 0;
+        int len = 0;
+        Map<Integer,Integer> myFruits = new HashMap<>();
+        while (end < fruits.length) {
+            myFruits.put(fruits[end],myFruits.getOrDefault(fruits[end],0)+1);
+            while (myFruits.size() > 2) {
+                if (myFruits.get(fruits[start]) == 1) {
+                    myFruits.remove(fruits[start]);
+                } else {
+                    myFruits.put(fruits[start],myFruits.get(fruits[start])-1);
+                }
                 start++;
             }
-            // 右移右边界
+            len = Math.max(end - start + 1,len);
             end++;
         }
-        return ans == Integer.MAX_VALUE ? 0 : ans;
+        return len;
     }
 
-    public static int maxSubArraySum(int[] nums, int mid) {
+    /**
+     * !!! leetcode 209. 长度最小的子数组   前缀和/滑动窗口  最小滑动窗口
+     */
+
+    public static int minSubArrayLen(int s, int[] nums) {
+        int start = 0, end = 0;
         int sum = 0;
-        int max = 0;
-        for (int i = 0; i < nums.length; i++) {
-            if (i < mid) {
-                sum += nums[i];
-                max = sum;
-            } else {
-                sum += nums[i] - nums[i-mid];
-                max = Math.max(sum, max);
+        int len = nums.length+1;
+        while (end < nums.length) {
+            sum += nums[end];
+            while (sum >= s) {
+                len = Math.min(end - start + 1,len);
+                sum -= nums[start];
+                start++;
             }
+            end++;
         }
-        return max;
+        return len == nums.length+1 ? 0 : len;
     }
-
 
     // 移除元素         双指针
     /**
@@ -192,6 +359,90 @@ public class ArrayMain {
 
 
     // 二分查找 条件：有序、不重复
+
+    /**
+     * leetcode 4. 寻找两个正序数组的中位数     第k小数
+     */
+    public static double findMedianSortedArrays1(int[] nums1, int[] nums2) {
+        return 0.0;
+    }
+
+    /**
+     * leetcode 4. 寻找两个正序数组的中位数     二分查找
+     */
+    public static double findMedianSortedArrays2(int[] nums1, int[] nums2) {
+        return 0.0;
+    }
+
+    /**
+     * leetcode 153. 寻找旋转排序数组中的最小值
+     */
+    public int findMinInRotatedArray(int[] nums) {
+        int n = nums.length;
+        if (nums[n-1] >= nums[0]) return nums[0];
+
+        int l = 0, r = n-1;
+        while (l <= r) {
+            int mid = (l+r)/2;
+            if (nums[mid] > nums[n-1]) {
+                l = mid + 1;
+            } else {
+                r = mid;
+            }
+
+            if (nums[r] >= nums[l]) return nums[l];
+        }
+        return nums[0];
+    }
+
+    /**
+     * leetcode 33. 搜索旋转排序数组
+     */
+    public static int searchRotatedSortedArray(int[] nums, int target) {
+        int l = 0, r = nums.length-1;
+        if (nums.length == 1) return nums[0] == target ? 0 : -1;
+
+        while (l <= r) {
+            int mid = (l+r)/2;
+            if (nums[0] <= nums[mid]) {
+                if (nums[0] <= target && target < nums[mid]) {
+                    r = mid - 1;
+                } else {
+                    l = mid + 1;
+                }
+            } else {
+                if (nums[mid] < target && target <= nums[nums.length - 1]) {
+                    l = mid + 1;
+                } else {
+                    r = mid - 1;
+                }
+            }
+
+            if (target == nums[mid]) return mid;
+        }
+        return -1;
+    }
+
+    /**
+     * leetcode 74. 搜索二维矩阵
+     */
+    public static boolean searchMatrix(int[][] matrix, int target) {
+        int a = matrix.length, b = matrix[0].length;
+        int l = 0, r = a*b;
+
+        while (l < r) {
+            int mid = (l+r)/2;
+            if (matrix[mid/b][mid%b] < target) {
+                l = mid + 1;
+            } else if (matrix[mid/b][mid%b] > target){
+                r = mid;
+            } else {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * leetcode 367. 有效的完全平方数
      */
@@ -389,4 +640,83 @@ public class ArrayMain {
         }
         return maxAns;
     }
+
+    /**
+     * !!! leetcode 3266. K 次乘运算后的最终数组 II   最小堆     快速幂
+     */
+    private static final int MOD = 1_000_000_007;
+
+    public int[] getFinalState(int[] nums, int k, int multiplier) {
+        if (multiplier == 1) { // 数组不变
+            return nums;
+        }
+
+        int n = nums.length;
+        int mx = 0;
+        for (int x : nums) {
+            mx = Math.max(mx, x);
+        }
+
+        // 每个数直接暴力操作到 >= mx
+        long[] a = new long[n];
+        int left = k;
+        outer:
+        for (int i = 0; i < n; i++) {
+            long x = nums[i];
+            while (x < mx) {
+                x *= multiplier;
+                if (--left < 0) {
+                    break outer;
+                }
+            }
+            a[i] = x;
+        }
+
+        if (left < 0) {
+            // 暴力模拟
+            PriorityQueue<long[]> pq = new PriorityQueue<>((p, q) -> p[0] != q[0] ? Long.compare(p[0], q[0]) : Long.compare(p[1], q[1]));
+            for (int i = 0; i < n; i++) {
+                pq.offer(new long[]{nums[i], i});
+            }
+            while (k-- > 0) {
+                long[] p = pq.poll();
+                p[0] *= multiplier;
+                pq.offer(p);
+            }
+            while (!pq.isEmpty()) {
+                long[] p = pq.poll();
+                nums[(int) p[1]] = (int) (p[0] % MOD);
+            }
+            return nums;
+        }
+
+        Integer[] ids = new Integer[n];
+        Arrays.setAll(ids, i -> i);
+        Arrays.sort(ids, (i, j) -> Long.compare(a[i], a[j]));
+
+        // 剩余的操作可以直接用公式计算
+        k = left;
+        long pow1 = pow(multiplier, k / n);
+        long pow2 = pow1 * multiplier % MOD;
+        for (int i = 0; i < n; i++) {
+            int j = ids[i];
+            nums[j] = (int) (a[j] % MOD * (i < k % n ? pow2 : pow1) % MOD);
+        }
+        return nums;
+    }
+
+    /**
+     * 快速幂
+     */
+    private long pow(long x, int n) {
+        long res = 1;
+        for (; n > 0; n /= 2) {
+            if (n % 2 > 0) {
+                res = res * x % MOD;
+            }
+            x = x * x % MOD;
+        }
+        return res;
+    }
+
 }
