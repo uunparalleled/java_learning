@@ -6,29 +6,9 @@ import java.util.*;
 
 public class ArrayMain {
 
+
+
     public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        int n = sc.nextInt();
-        int[] nums = new int[n];
-        for (int i = 0; i < n; i++) {
-            nums[i] = sc.nextInt();
-        }
-        int a = sc.nextInt();
-        int b = sc.nextInt();
-
-        // 读取一个单词 例如：Hello
-        String word = sc.next();
-        // 读取整行文本
-        String line = sc.nextLine();
-        // 消耗换行符
-        sc.nextLine();
-        // 判断空白行
-        boolean isEmptyLine = !line.trim().isEmpty();
-        // 读取浮点数
-        double d = sc.nextDouble();
-    }
-
-    /*public static void main(String[] args) {
 
         int[][] nums = inputData.inputArrayInt("[1,2,3,4],[12,13,14,5],[11,16,15,6],[10,9,8,7]");
 //        int[] nums = {100000,2000};
@@ -44,11 +24,72 @@ public class ArrayMain {
         System.out.println(spiralArray(nums));
 //        System.out.println(searchRotatedSortedArray(nums,0));
     }
-*/
+
+    // 开发商购买土地
+    /**
+     * kamaCoder 44. 开发商购买土地
+     */
+    /*import java.util.*;
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        int m = sc.nextInt();
+        int[][] nums = new int[n][m];
+        int[][] nSum = new int[n][m];
+        int[][] mSum = new int[n][m];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                nums[i][j] = sc.nextInt();
+                nSum[i][j] += nums[i][j] + (i == 0 ? 0 : nSum[i-1][j]);
+                mSum[i][j] += nums[i][j] + (j == 0 ? 0 : mSum[i][j-1]);
+            }
+        }
+        int[] nDisSum = new int[n];
+        int[] mDisSum = new int[m];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                nSum[i][j] = 2*nSum[i][j] - nSum[n-1][j];
+                nDisSum[i] += nSum[i][j];
+                mSum[i][j] = 2*mSum[i][j] - mSum[i][m-1];
+                mDisSum[j] += mSum[i][j];
+            }
+        }
+        int res = Math.abs(nDisSum[0]);
+        for (int dis : nDisSum) {
+            if (Math.abs(dis) < Math.abs(res)) res = Math.abs(dis);
+        }
+        for (int dis : mDisSum) {
+            if (Math.abs(dis) < Math.abs(res)) res = Math.abs(dis);
+        }
+        System.out.println(res);
+    }
+}*/
 
     // 区间和
-
-
+    /**
+     * kamaCoder 58. 区间和        前缀和 在涉及计算区间和的问题时非常有用
+     */
+    /*
+      import java.util.*;
+      public class MainLe {
+          public static void main(String[] args) {
+              Scanner sc = new Scanner(System.in);
+              int n = sc.nextInt();
+              int[] nums = new int[n];
+              int[] sum = new int[n];
+              for (int i = 0; i < n; i++) {
+                  nums[i] = sc.nextInt();
+                  sum[i] = nums[i] + (i == 0 ? 0 : sum[i-1]);
+              }
+              while (sc.hasNextInt()) {
+                  int a = sc.nextInt();
+                  int b = sc.nextInt();
+                  System.out.println(sum[b] - (a == 0 ? 0 : sum[a-1]));
+              }
+          }
+      }
+     */
 
     // 螺旋矩阵
 
@@ -580,6 +621,19 @@ public class ArrayMain {
             }
         }
         return -1;
+    }
+
+    // other
+
+    /**
+     * leetcode 3285. 找到稳定山的下标      水题
+     */
+    public static List<Integer> stableMountains(int[] height, int threshold) {
+        List<Integer> res = new ArrayList<>();
+        for (int i = 1; i < height.length; i++) {
+            if (height[i-1] > threshold) res.add(i);
+        }
+        return res;
     }
 
 
