@@ -15,7 +15,39 @@ public class MainLe {
 //                {'1','1','1','0','1'}
 //        };
 //        firstMissingPositive(nums);
-        System.out.println(firstMissingPositive(nums));
+        System.out.println(minAnagramLength("bbb"));
+    }
+
+    /**
+     * leetcode 3138. 同位字符串连接的最小长度
+     */
+    public static int minAnagramLength(String s) {
+        int n = s.length();
+        char[] ss = s.toCharArray();
+        for (int i = 1; i <= n / 2; i++) {
+            if (n % i != 0) continue;
+            int end = i;
+            int[] hash = new int[128];
+            for (int j = 0; j < i; j++) {
+                hash[ss[j]]++;
+            }
+            int count = 0;
+            out:
+            while (end < n) {
+                count = 0;
+                int[] tmp = new int[128];
+                for (int j = end; j < end+i; j++) {
+                    tmp[ss[j]]++;
+                    if (tmp[ss[j]] <= hash[ss[j]]) count++;
+                    else {
+                        break out;
+                    }
+                }
+                end = end + i;
+            }
+            if (end == n && count == (n % i -1)) return i;
+        }
+        return n;
     }
 
     /**

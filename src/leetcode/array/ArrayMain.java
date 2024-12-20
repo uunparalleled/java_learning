@@ -5,14 +5,11 @@ import leetcode.data.inputData;
 import java.util.*;
 
 public class ArrayMain {
-
-
-
     public static void main(String[] args) {
 
-        int[][] nums = inputData.inputArrayInt("[1,2,3,4],[12,13,14,5],[11,16,15,6],[10,9,8,7]");
+//        int[][] nums = inputData.inputArrayInt("[1,2,3,4],[12,13,14,5],[11,16,15,6],[10,9,8,7]");
 //        int[] nums = {100000,2000};
-//        int[] nums = {4,5,6,7,0,1,2};
+        int[] nums = {0,4};
 //        int[] res = searchRange(nums,3);
         String s = "AAAAAAABBCCCC";
         String t = "AAAABB";
@@ -21,7 +18,7 @@ public class ArrayMain {
 //        int a = (int) ((10e10 + 3) / 10e9);
 //        System.out.println(10e9+7 - 1000000000);
 //        System.out.println(Arrays.toString(getFinalState(nums, 2, 1000000)));
-        System.out.println(spiralArray(nums));
+        System.out.println(searchRotatedSortedArray(nums,4));
 //        System.out.println(searchRotatedSortedArray(nums,0));
     }
 
@@ -440,27 +437,31 @@ public class Main {
      * leetcode 33. 搜索旋转排序数组
      */
     public static int searchRotatedSortedArray(int[] nums, int target) {
-        int l = 0, r = nums.length-1;
-        if (nums.length == 1) return nums[0] == target ? 0 : -1;
+        int n = nums.length;
+        int l = 0, r = n-1;
 
+        // 定义为双闭区间，所以为 <=
         while (l <= r) {
             int mid = (l+r)/2;
+            // [0,mid] 有序   需要跟边界比较才能确定哪段有序
             if (nums[0] <= nums[mid]) {
-                if (nums[0] <= target && target < nums[mid]) {
+                // 闭区间 所以为 <=       与 mid比较 等于号无所谓
+                if (nums[l] <= target && target < nums[mid]) {
                     r = mid - 1;
                 } else {
                     l = mid + 1;
                 }
             } else {
-                if (nums[mid] < target && target <= nums[nums.length - 1]) {
+                // [mid+1,r] 有序           闭区间 所以为 <=
+                if (nums[mid] < target && target <= nums[r]) {
                     l = mid + 1;
                 } else {
                     r = mid - 1;
                 }
             }
-
-            if (target == nums[mid]) return mid;
+            if (nums[mid] == target) return mid;
         }
+        if (n == 1 && nums[0] == target) return 0;
         return -1;
     }
 
