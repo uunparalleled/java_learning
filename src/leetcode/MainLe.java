@@ -8,14 +8,79 @@ import java.util.stream.IntStream;
  */
 public class MainLe {
     public static void main(String[] args) {
-        int[] nums = {1,5,3,2,5,6,7};
+        int[] nums = {3,0,0,0,0,2};
+        int[] nums1 = {3,0,0,0,0,2};
 //        char[][] array = {
 //                {'1','0','1','1','1'},
 //                {'1','0','1','0','1'},
 //                {'1','1','1','0','1'}
 //        };
 //        firstMissingPositive(nums);
-        System.out.println(minAnagramLength("bbb"));
+        System.out.println(eatenApples(nums,nums1));
+    }
+
+    /**
+     * leetcode 3046. 分割数组      哈希表
+     */
+    public static boolean isPossibleToSplit(int[] nums) {
+        int[] hash = new int[101];
+        for (int num : nums) {
+            hash[num]++;
+            if (hash[num] > 2) return false;
+        }
+        return true;
+    }
+
+    /**
+     * leetcode 1705. 吃苹果的最大数目
+     */
+    public static int eatenApples(int[] apples, int[] days) {
+        TreeMap<Integer, Integer> map = new TreeMap<>();
+        int day = 0;
+        int eat = 0;
+        map.put(-1,1);
+        while (day < apples.length || !map.isEmpty()) {
+            while (!map.isEmpty() && map.firstKey() <= day) {
+                map.remove(map.firstKey());
+            }
+            if (day < apples.length && apples[day] != 0) {
+                map.put(day + days[day],map.getOrDefault(day + days[day],0) + apples[day]);
+            }
+
+            if (!map.isEmpty()) {
+                if (map.firstEntry().getValue() == 1) {
+                    map.remove(map.firstKey());
+                } else {
+                    map.put(map.firstKey(),map.firstEntry().getValue() - 1);
+                }
+                eat++;
+            }
+            day++;
+        }
+        return eat;
+    }
+
+    /**
+     * leetcode 1387. 将整数按权重排序
+     */
+    public static int getKth(int lo, int hi, int k) {
+        int[][] res = new int[hi - lo + 1][2];
+        for (int i = lo; i <= hi; i++) {
+            int a = 0;
+            int n = i;
+            while (n != 1) {
+                if (n % 2 == 0) n = n >> 1;
+                else n = 3 * n + 1;
+                a++;
+            }
+            res[i-lo][0] = a;
+            res[i-lo][1] = i;
+        }
+        Arrays.sort(res, (o1, o2) -> {
+            if (o1[0] != o2[0]) return Integer.compare(o1[0],o2[0]);
+            else return Integer.compare(o1[1],o2[1]);
+        });
+        return res[k-1][1];
     }
 
     /**

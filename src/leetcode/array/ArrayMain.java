@@ -9,7 +9,7 @@ public class ArrayMain {
 
 //        int[][] nums = inputData.inputArrayInt("[1,2,3,4],[12,13,14,5],[11,16,15,6],[10,9,8,7]");
 //        int[] nums = {100000,2000};
-        int[] nums = {0,4};
+        int[] nums = {0,4,3,6,7,2,23,4,4,57,48,23,67,237,347,37};
 //        int[] res = searchRange(nums,3);
         String s = "AAAAAAABBCCCC";
         String t = "AAAABB";
@@ -18,9 +18,50 @@ public class ArrayMain {
 //        int a = (int) ((10e10 + 3) / 10e9);
 //        System.out.println(10e9+7 - 1000000000);
 //        System.out.println(Arrays.toString(getFinalState(nums, 2, 1000000)));
-        System.out.println(searchRotatedSortedArray(nums,4));
+        quickSort(nums,0,nums.length-1);
+        System.out.println(Arrays.toString(nums));
 //        System.out.println(searchRotatedSortedArray(nums,0));
     }
+
+    // 排序
+
+    /**
+     * leetcode 2545. 根据第 K 场考试的分数排序
+     */
+    public static int[][] sortTheStudents(int[][] score, int k) {
+        Arrays.sort(score, (a, b) -> Integer.compare(b[k],a[k]));
+        return score;
+    }
+
+    public static void quickSort(int[] q, int l, int r) {
+        // 递归终止情况
+        if (l >= r) return;
+        // 第一步：分成子问题
+        int i = l - 1, j = r + 1, x = q[l + r >> 1];
+        // 左右指针分别进行移动，然后遇到异常的数字后交换
+        while (i < j) {
+            do i++; while (q[i] < x);
+            do j--; while (q[j] > x);
+            if (i < j) {
+                int tmp = q[i];
+                q[i] = q[j];
+                q[j] = tmp;
+            }
+        }
+        // 第二步：递归处理子问题
+        quickSort(q, l, j);
+        quickSort(q, j + 1, r);
+        // 第三步：子问题合并，快排不需要，但归并排序的核心在这一步骤
+    }
+
+
+    /**
+     * 冒泡排序
+     */
+    public static int[] bubbleSort(int[] nums) {
+        return null;
+    }
+
 
     // 开发商购买土地
     /**
@@ -88,7 +129,50 @@ public class Main {
       }
      */
 
-    // 螺旋矩阵
+    // 矩阵       考虑清楚边界情况、过程逻辑
+
+    /**
+     * leetcode 48. 旋转图像
+     */
+    public static void rotate(int[][] matrix) {
+        int n = matrix.length;
+
+        for (int i = 0; i < n / 2; i++) {
+            for (int j = 0; j < (n + 1) / 2; j++) {
+                int tmp = matrix[i][j];
+                matrix[i][j] = matrix[n-j-1][i];
+                matrix[n-j-1][i] = matrix[n-i-1][n-j-1];
+                matrix[n-i-1][n-j-1] = matrix[j][n-i-1];
+                matrix[j][n-i-1] = tmp;
+            }
+        }
+    }
+
+    /**
+     * leetcode 73. 矩阵置零
+     */
+    public static void setZeroes(int[][] matrix) {
+        int m = matrix.length, n = matrix[0].length;
+        boolean[] row = new boolean[m];
+        boolean[] col = new boolean[n];
+
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (matrix[i][j] == 0) {
+                    row[i] = true;
+                    col[j] = true;
+                }
+            }
+        }
+
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (row[i] || col[j]) {
+                    matrix[i][j] = 0;
+                }
+            }
+        }
+    }
 
     /**
      * leetcode LCR 146. 螺旋遍历二维数组       同 54题
@@ -397,6 +481,28 @@ public class Main {
 
 
     // 二分查找 条件：有序、不重复
+    /**
+     * leetcode 240. 搜索二维矩阵 II
+     */
+    public static boolean searchMatrix2(int[][] matrix, int target) {
+        int m = matrix.length, n = matrix[0].length;
+
+        for (int i = 0; i < m; i++) {
+            if (matrix[i][n-1] >= target && matrix[i][0] <= target) {
+                int l = 0, r = n-1;
+                while (l <= r) {
+                    int mid = (l + r) / 2;
+                    if (matrix[i][mid] < target) {
+                        l = mid + 1;
+                    } else if (matrix[i][mid] > target) {
+                        r = mid - 1;
+                    } else return true;
+
+                }
+            }
+        }
+        return false;
+    }
 
     /**
      * leetcode 4. 寻找两个正序数组的中位数     第k小数
