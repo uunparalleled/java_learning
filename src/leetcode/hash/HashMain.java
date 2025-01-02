@@ -16,6 +16,25 @@ public class HashMain {
 
     // 数组就是简单的哈希表，但是数组的大小可不是无限开辟的
 
+    /**
+     * leetcode 202. 快乐数
+     */
+    public boolean isHappy(int n) {
+        HashSet<Integer> set = new HashSet<>();
+
+        while (n != 1) {
+            int tmp = n;
+            int sum = 0;
+            while (tmp != 0) {
+                sum += (tmp % 10) * (tmp % 10);
+                tmp = tmp / 10;
+            }
+            if (set.contains(sum)) return false;
+            set.add(sum);
+            n = sum;
+        }
+        return true;
+    }
 
     /**
      * leetcode 349. 两个数组的交集
