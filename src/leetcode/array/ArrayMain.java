@@ -9,7 +9,7 @@ public class ArrayMain {
 
 //        int[][] nums = inputData.inputArrayInt("[1,2,3,4],[12,13,14,5],[11,16,15,6],[10,9,8,7]");
 //        int[] nums = {100000,2000};
-        int[] nums = {0,4,3,6,7,2,23,4,4,57,48,23,67,237,347,37};
+        int[] nums = {4,6};
 //        int[] res = searchRange(nums,3);
         String s = "AAAAAAABBCCCC";
         String t = "AAAABB";
@@ -19,11 +19,27 @@ public class ArrayMain {
 //        System.out.println(10e9+7 - 1000000000);
 //        System.out.println(Arrays.toString(getFinalState(nums, 2, 1000000)));
         quickSort(nums,0,nums.length-1);
-        System.out.println(Arrays.toString(nums));
+        System.out.println(maxConsecutive(2,9,nums));
 //        System.out.println(searchRotatedSortedArray(nums,0));
     }
 
     // 排序
+
+    /**
+     * leetcode 2274. 不含特殊楼层的最大连续楼层数
+     */
+    public static int maxConsecutive(int bottom, int top, int[] special) {
+        Arrays.sort(special);
+        int l = bottom;
+        int len = 0;
+        for (int i = 0; i < special.length; i++) {
+            len = Math.max(special[i] - l,len);
+            l = special[i] + 1;
+
+        }
+        len = Math.max(top - l + 1,len);
+        return len;
+    }
 
     /**
      * leetcode 2545. 根据第 K 场考试的分数排序

@@ -12,15 +12,15 @@ public class TreeMain {
         System.out.println(root);
 
         TreeNode.preOrderRecur(root);
-        System.out.println(preorderTraversal(root));
+        System.out.println("pre" + preorderTraversal(root));
 
         TreeNode.inOrderRecur(root);
-        System.out.println(inorderTraversal(root));
+        System.out.println("in" + inorderTraversal(root));
 
         TreeNode.postOrderRecur(root);
-        System.out.println(postorderTraversal(root));
+        System.out.println("post" + postorderTraversal(root));
 
-        System.out.println(levelOrder(root));
+        System.out.println("level" + levelOrder(root));
     }
 
     /**
@@ -29,11 +29,11 @@ public class TreeMain {
      * @return
      */
     public static List<Integer> preorderTraversal(TreeNode root) {
+        if (root == null) return new ArrayList<>();
         List<Integer> res = new ArrayList<>();
-        res.add(1);
-        res.add(1);
-        res.add(1);
-
+        res.add(root.val);
+        res.addAll(preorderTraversal(root.left));
+        res.addAll(preorderTraversal(root.right));
         return res;
     }
 
@@ -43,11 +43,11 @@ public class TreeMain {
      * @return
      */
     public static List<Integer> inorderTraversal(TreeNode root) {
+        if (root == null) return new ArrayList<>();
         List<Integer> res = new ArrayList<>();
-        res.add(1);
-        res.add(1);
-        res.add(1);
-
+        res.addAll(inorderTraversal(root.left));
+        res.add(root.val);
+        res.addAll(inorderTraversal(root.right));
         return res;
     }
 
@@ -57,11 +57,11 @@ public class TreeMain {
      * @return
      */
     public static List<Integer> postorderTraversal(TreeNode root) {
+        if (root == null) return new ArrayList<>();
         List<Integer> res = new ArrayList<>();
-        res.add(1);
-        res.add(1);
-        res.add(1);
-
+        res.addAll(postorderTraversal(root.left));
+        res.addAll(postorderTraversal(root.right));
+        res.add(root.val);
         return res;
     }
 
