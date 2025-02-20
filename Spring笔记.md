@@ -27,7 +27,12 @@ Spring下包含多个项目：
 * 起步依赖
 * 嵌入式服务器
 
-### CommandLineRunner
+
+#### 启动Spring Boot发生了什么
+
+TODO
+
+##### CommandLineRunner
 
 单次执行：
 继承CommandLineRunner，重写run方法。
@@ -42,6 +47,43 @@ public void run(String... args) {
 }
 }
 ```
+
+### 单元测试
+
+使用@SpringBootTest注解：用来创建Spring的上下文ApplicationContext，保证测试在上下文环境里运行
+
+使用@Test注解：JUnit识别@Test注解，进行测试。JUnit 单元测试是 Java 的测试框架
+
+#### JUnit4 与 Junit5
+
+JUnit4 在测试时，除了@SpringBootTest和@Test，还需要在类上添加@RunWith(SpringRunner.class)，不然自动装配bean会是null，在调用方法时，会出现NPE异常。
+
+如果用的是JUnit5，不能加@RunWith(SpringRunner.class)
+
+JUnit4：import org.junit.Test;				依赖：junit-jupiter
+
+`<dependency>`
+    `<groupId>`org.junit.jupiter `</groupId>`
+    `<artifactId>`junit-jupiter-api `</artifactId>`
+    `<scope>`test `</scope>`
+`</dependency>`
+
+JUnit5：import org.junit.jupiter.api.Test;		依赖：junit-jupiter-api
+
+`<dependency>`
+    `<groupId>`org.junit.jupiter `</groupId>`
+    `<artifactId>`junit-jupiter `</artifactId>`
+    `<scope>`test `</scope>`
+`</dependency>`
+
+Spring Boot 中 导入spring-boot-starter-test，会自动注入JUnit4、5依赖
+
+`<dependency>`
+    `<groupId>`org.springframework.boot `</groupId>`
+    `<artifactId>`spring-boot-starter-test `</artifactId>`
+`</dependency>`
+
+但如果自己配置导入了JUnit依赖，那就只能选导入的依赖版本
 
 ## Spring Framework
 
@@ -71,7 +113,6 @@ public void run(String... args) {
 
 * 一级缓存（singletonObjects）： 存储完全初始化且可以直接使用的单例 Bean。只有当 Bean 的所有依赖已经被完全注入之后，才会放入一级缓存。
 * 二级缓存（earlySingletonObjects）： 存储正在创建但尚未完成初始化的 Bean，用于在依赖循环中暴露未完成的 Bean。这一层允许 Spring 提前返回一个部分完成的 Bean 实例。
-
 * 三级缓存（singletonFactories）： 存储 Bean 的工厂方法（ObjectFactory），在需要时可以通过调用该方法创建代理对象。这层缓存的主要作用是为了支持 AOP 等代理场景，可以确保获取的是代理后的对象。
 
 工作流程：
@@ -79,3 +120,10 @@ Spring 在创建一个 Bean 时，首先会检查一级缓存中是否存在该 
 如果一级缓存中没有，会查看二级缓存，尝试获取未完全初始化的实例。
 如果二级缓存也没有，Spring 会调用三级缓存中的工厂方法获取 Bean。
 在 Bean 初始化完成后，会将其从二级或三级缓存中移除，并放入一级缓存。
+
+
+### Bean
+
+#### Bean的作用域
+
+TODO
