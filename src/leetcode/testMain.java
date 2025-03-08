@@ -11,8 +11,8 @@ public class testMain {
     public static void main(String[] args) {
 
 //        int[][] nums = inputData.inputArrayInt("[1,2,3,4],[12,13,14,5],[11,16,15,6],[10,9,8,7]");
-//        int[] nums = {100000,2000};
-        int[][] nums = {{0, 0, 1},{2, 2, 1}};
+        int[] nums = {3,3,3,4,5};
+        int[][] nums2 = {{0, 0, 1},{2, 2, 1}};
 //        int[] res = searchRange(nums,3);
         String s = "baccbaadbc";
         String t = "cc*baa*adb";
@@ -25,7 +25,7 @@ public class testMain {
 //        System.out.println(Arrays.toString(getFinalState(nums, 2, 1000000)));
 
 //        System.out.println(dpBase.lengthOfLIS(nums));
-        System.out.println(Week20250215.shortestMatchingSubstring(s,t));
+        System.out.println(dpBase.canPartition(nums));
 //        System.out.println(searchRotatedSortedArray(nums,0));
     }
 

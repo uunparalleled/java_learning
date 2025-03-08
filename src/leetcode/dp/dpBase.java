@@ -6,6 +6,33 @@ public class dpBase {
 
 
     /**
+     * leetcode 416. 分割等和子集
+     */
+    public static boolean canPartition(int[] nums) {
+        int sum = 0;
+        int n = nums.length;
+        for (int i = 0; i < n; i++) {
+            sum += nums[i];
+        }
+        if (sum % 2 == 1) return false;
+
+        boolean[] dp = new boolean[sum/2 + 1];
+        List<Integer> dpList = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            if (nums[i] < sum/2) {
+                for (int j = 0; j < dpList.size(); j++) {
+                    if (dpList.get(j) + nums[i] <= sum/2) {
+                        dpList.add(dpList.get(j) + nums[i]);
+                    }
+                }
+                dpList.add(nums[i]);
+            } else if (nums[i] == sum/2) return true;
+            if (dpList.contains(sum/2)) return true;
+        }
+        return false;
+    }
+
+    /**
      * leetcode 152. 乘积最大子数组
      */
     public static int maxProduct(int[] nums) {

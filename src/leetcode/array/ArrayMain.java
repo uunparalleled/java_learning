@@ -557,24 +557,30 @@ public class Main {
 
     /**
      * leetcode 33. 搜索旋转排序数组
+     *  定义target在左闭右闭的区间里
+     *  1、while (l <= r) 因为 == 有意义  target还在[l,r]里
+     *  2、if (nums[mid] > target) r = mid - 1;    因为当前 nums[mid] 一定不是 target
+     *  3、同理 if (nums[mid] < target) l = mid + 1;    因为当前 nums[mid] 一定不是 target
+     *
+     *  定义target在左闭右开的区间里
+     *  1、while (l < r) 因为 == 没有意义  target不在[l,r)里
+     *  2、if (nums[mid] > target) r = mid;    因为当前 nums[mid]不等于target，去左区间继续寻找，而寻找区间是左闭右开区间，
+     *  所以right更新为middle，即：下一个查询区间不会去比较nums[mid]
+     *  3、同理 if (nums[mid] < target) l = mid + 1;   因为左边是闭区间，所以 l要 +
      */
     public static int searchRotatedSortedArray(int[] nums, int target) {
         int n = nums.length;
         int l = 0, r = n-1;
-
-        // 定义为双闭区间，所以为 <=
         while (l <= r) {
             int mid = (l+r)/2;
-            // [0,mid] 有序   需要跟边界比较才能确定哪段有序
-            if (nums[0] <= nums[mid]) {
-                // 闭区间 所以为 <=       与 mid比较 等于号无所谓
+            // 判断 mid 是否在旋转点的左侧
+            if (nums[mid] >= nums[0]) {
                 if (nums[l] <= target && target < nums[mid]) {
                     r = mid - 1;
                 } else {
                     l = mid + 1;
                 }
             } else {
-                // [mid+1,r] 有序           闭区间 所以为 <=
                 if (nums[mid] < target && target <= nums[r]) {
                     l = mid + 1;
                 } else {
@@ -583,7 +589,6 @@ public class Main {
             }
             if (nums[mid] == target) return mid;
         }
-        if (n == 1 && nums[0] == target) return 0;
         return -1;
     }
 
